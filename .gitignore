@@ -1,4 +1,5 @@
 *.class
+target/*
 #Idea projects
 *.idea
 *.iml
