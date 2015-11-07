@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+</h:head>
+<h:body>
+    <h:form id="form">
+        <p:growl id="msgs" showDetail="true"/>
+        <h:panelGrid columns="3">
+            <p:commandButton value="Добавить" type="button" onclick="PF('newTaskDlg').show();" style="margin: 10px"/>
+            <p:commandButton value="Диаграммма" type="button" onclick="PF('DiagramDlg').show();" style="margin: 10px"/>
+        </h:panelGrid>
+        <!-- Add new document -dialog -->
+        <p:dialog widgetVar="newTaskDlg" id="newTaskDialog"
+                  header="Добавить новую задачу" message="Add new document"
+                  hideEffect="fade" showEffect="fade" resizable="fasle" closable="true"
+                  lazy="true" width="400" modal="true">
+
+            <h:panelGrid columns="3">
+                <h:outputText value="Название:" style="margin-top: 5px"/>
+                <p:spacer width="10" height="10"/>
+                <p:inputText value="#{dtEditView.name}" width="35"
+                             maxlength="128" required="true"/>
+                <h:outputText value="Трудоемкость:" style="margin-top: 5px"/>
+                <p:spacer width="10" height="10"/>
+                <p:inputText value="#{dtEditView.complexity}" required="true"/>
+
+                <h:outputText value="Статус:" style="margin-top: 5px"/>
+                <p:spacer width="10" height="10"/>
+                <p:inputText value="#{dtEditView.status}" required="true"/>
+            </h:panelGrid>
+            <f:facet name="footer">
+                <p:commandButton value="Добавить" id="withIcon" actionListener="#{dtEditView.onRowAdd}"
+                                 update="msgs" icon="ui-icon-disk" onclick="PF('newTaskDlg').close();"/>
+            </f:facet>
+        </p:dialog>
+
+        <p:dialog widgetVar="DiagramDlg" id="DiagramDialog"
+                  header="Burndown диаграмма"
+                  hideEffect="fade" showEffect="fade" resizable="fasle" closable="true"
+                  lazy="true" width="400" modal="true">
+            <p:chart type="line" model="#{chartView.dateModel}" style="height:400px;"/>
+
+        </p:dialog>
+
+        <p:dataTable id="tasks" var="task" value="#{dtEditView.tasks}"
+                     editable="true" style="margin-bottom:20px"
+                     emptyMessage="Таблица пуста.">
+            <f:facet name="header">Список задач</f:facet>
+
+            <p:ajax event="rowEdit" listener="#{dtEditView.onRowEdit}" update=":form:msgs"/>
+            <p:ajax event="rowEditCancel" listener="#{dtEditView.onRowCancel}" update=":form:msgs"/>
+
+            <p:column headerText="Id">
+                <h:outputText value="#{task.id}"/>
+            </p:column>
+
+            <p:column headerText="Название">
+                <p:cellEditor>
+                    <f:facet name="output"><h:outputText value="#{task.name}"/></f:facet>
+                    <f:facet name="input"><p:inputText value="#{task.name}" style="width:100%" label="Name"/></f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Трудоемкость">
+                <p:cellEditor>
+                    <f:facet name="output">
+                        <h:outputText value="#{task.complexity}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                        <h:inputText value="#{task.complexity}" style="width:100%" label="Name"/>
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Статус">
+                <p:cellEditor>
+                    <f:facet name="output"><h:outputText value="#{task.status}"/></f:facet>
+                    <f:facet name="input">
+                        <h:selectOneMenu value="#{task.status}" style="width:100%">
+                            <f:selectItems value="#{dtEditView.statuses}" var="status" itemLabel="#{status}"
+                                           itemValue="#{status}"/>
+                        </h:selectOneMenu>
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Опции" style="width: 64px">
+                <p:rowEditor/>
+                <p:commandLink styleClass="ui-icon ui-icon-trash" title="Delete" ajax="false">
+                    <!--actionListener="#{dtEditView.onRowDelete(task)}"-->
+                    <p:confirm header="Confirmation" message="Удалить задачу?" icon="ui-icon-alert ui-icon"/>
+                </p:commandLink>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Да" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+                                     actionListener="#{dtEditView.onRowDelete(task)}"/>
+                    <p:commandButton value="Нет" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+                </p:confirmDialog>
+            </p:column>
+        </p:dataTable>
+    </h:form>
+
+</h:body>
+</html>

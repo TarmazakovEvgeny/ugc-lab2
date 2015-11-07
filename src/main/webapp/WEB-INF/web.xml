@@ -1,18 +1,48 @@
-<!DOCTYPE web-app PUBLIC
-        "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-        "http://java.sun.com/dtd/web-app_2_3.dtd" >
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         id="WebApp_ID" version="2.5">
 
-<web-app>
+    <display-name>PrimeFaces Web Application</display-name>
+
+    <!-- Change to "Production" when you are ready to deploy -->
+    <context-param>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>Development</param-value>
+    </context-param>
+
+    <!-- Welcome page -->
+    <welcome-file-list>
+        <welcome-file>faces/index.xhtml</welcome-file>
+    </welcome-file-list>
+
+    <!-- JSF mapping -->
     <servlet>
-        <servlet-name>BurndownServlet</servlet-name>
-        <display-name>BurndownServlet</display-name>
-        <description></description>
-        <servlet-class>ru.mephi.ugc.burndown.BurndownServlet</servlet-class>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
+
+    <!-- Map these files with JSF -->
     <servlet-mapping>
-        <servlet-name>BurndownServlet</servlet-name>
-        <url-pattern>/BurndownServlet</url-pattern>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>/faces/*</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.jsf</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.faces</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
+
     <security-constraint>
         <display-name>Example Security Constraint</display-name>
         <web-resource-collection>
@@ -35,8 +65,8 @@
         <auth-method>FORM</auth-method>
         <realm-name>auth</realm-name>
         <form-login-config>
-            <form-login-page>/login.jsp</form-login-page>
-            <form-error-page>/error.jsp</form-error-page>
+            <form-login-page>/login.xhtml</form-login-page>
+            <form-error-page>/error.xhtml</form-error-page>
         </form-login-config>
     </login-config>
     <security-role>

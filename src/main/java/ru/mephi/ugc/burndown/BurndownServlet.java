@@ -54,14 +54,14 @@ public class BurndownServlet extends HttpServlet {
 
         request.setAttribute("employee", employee);
         request.setAttribute("EmployeeList", employeeService.getEmployee());
-        request.getRequestDispatcher("index.jsp").forward(request, response);
+        request.getRequestDispatcher("index.xhtml").forward(request, response);
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-        processRequest(request, response);
-
+        request.getRequestDispatcher("index.xhtml").forward(request, response);
+        // processRequest(request, response);
     }
 
     @Override
