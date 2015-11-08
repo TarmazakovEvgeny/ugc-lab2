@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
     <title>Burndown</title>
@@ -11,13 +12,13 @@
 <h1 align="center">Burndown-диаграмма</h1>
 
 <div align="center">
-    <p:panel header="Авторизация" id="panel" styleClass="ui-message-dialog">
+    <p:panel header="Авторизация" id="panel" style="border: 2px; border-radius: 10px">
         <form method="post" action="#{request.contextPath}/j_security_check">
-            <label for="username" style="margin-right: 10px">Логин:</label>
-            <input type="text" id="username" name="j_username"/> <br/>
-            <label for="password">Пароль: </label>
-            <input type="password" id="password" name="j_password"/> <br/>
-            <input type="submit" value="Войти"/>
+            <label for="username" style="margin-top: 10px">Логин:</label>
+            <input type="text" id="username" name="j_username" style="margin-top: 10px; margin-left: 10px"/> <br/>
+            <label for="password" style="margin-top: 10px">Пароль: </label>
+            <input type="password" id="password" name="j_password" style="margin-top: 10px"/> <br/>
+            <input type="submit" value="Войти" style="margin: 10px"/>
         </form>
     </p:panel>
 </div>

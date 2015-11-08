@@ -1,19 +1,32 @@
 package ru.mephi.ugc.burndown.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "tasks")
+@NamedQueries({@NamedQuery(name = "Task.getAll", query = "SELECT t FROM Task t order by t.id")})
 public class Task {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(name = "name")
     private String name;
+    @Column(name = "complexity")
     private int complexity;
+    @Column(name = "status")
     private String status;
 
     public Task(int id, String name, int complexity, String status) {
+        super();
         this.id = id;
+        this.name = name;
+        this.complexity = complexity;
+        this.status = status;
+    }
+
+    public Task(String name, int salary, String status) {
         this.name = name;
         this.complexity = complexity;
         this.status = status;
@@ -52,5 +65,15 @@ public class Task {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", complexity=" + complexity +
+                ", status='" + status + '\'' +
+                '}';
     }
 }

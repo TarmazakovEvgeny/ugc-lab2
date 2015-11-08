@@ -67,7 +67,7 @@ public class BurndownServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-        processRequest(request, response);
+        //processRequest(request, response);
     }
 
 }

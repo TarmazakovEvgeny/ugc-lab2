@@ -12,9 +12,16 @@
     <h:form id="form">
         <p:growl id="msgs" showDetail="true"/>
         <h:panelGrid columns="3">
-            <p:commandButton value="Добавить" type="button" onclick="PF('newTaskDlg').show();" style="margin: 10px"/>
-            <p:commandButton value="Диаграммма" type="button" onclick="PF('DiagramDlg').show();" style="margin: 10px"/>
+            <h:form id="addNewTaskForm">
+                <p:commandButton value="Новая задача" type="button" onclick="PF('newTaskDlg').show();"
+                                 style="margin: 10px"/>
+            </h:form>
+            <p:commandButton value="Добавить дни" type="button" onclick="PF('newDateDlg').show();"
+                             style="margin: 10px"/>
+            <p:commandButton value="Диаграмма" type="button" onclick="PF('DiagramDlg').show();"
+                             style="margin: 10px"/>
         </h:panelGrid>
+
         <!-- Add new document -dialog -->
         <p:dialog widgetVar="newTaskDlg" id="newTaskDialog"
                   header="Добавить новую задачу" message="Add new document"
@@ -35,11 +42,12 @@
                 <p:inputText value="#{dtEditView.status}" required="true"/>
             </h:panelGrid>
             <f:facet name="footer">
-                <p:commandButton value="Добавить" id="withIcon" actionListener="#{dtEditView.onRowAdd}"
+                <p:commandButton value="Добавить" id="addNewTask" actionListener="#{dtEditView.onRowAdd}"
                                  update="msgs" icon="ui-icon-disk" onclick="PF('newTaskDlg').close();"/>
             </f:facet>
         </p:dialog>
 
+        <!-- Diagram - dialog -->
         <p:dialog widgetVar="DiagramDlg" id="DiagramDialog"
                   header="Burndown диаграмма"
                   hideEffect="fade" showEffect="fade" resizable="fasle" closable="true"
@@ -70,7 +78,7 @@
             <p:column headerText="Трудоемкость">
                 <p:cellEditor>
                     <f:facet name="output">
-                        <h:outputText value="#{task.complexity}"/>
+                        <h:outputText value="#{task.complexity} часов"/>
                     </f:facet>
                     <f:facet name="input">
                         <h:inputText value="#{task.complexity}" style="width:100%" label="Name"/>

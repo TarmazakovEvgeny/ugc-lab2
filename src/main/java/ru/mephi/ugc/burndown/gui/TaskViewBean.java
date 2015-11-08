@@ -4,9 +4,9 @@ import org.primefaces.event.RowEditEvent;
 import ru.mephi.ugc.burndown.model.Task;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
@@ -25,12 +25,13 @@ public class TaskViewBean implements Serializable {
 
     private List<Task> tasks;
 
-    @ManagedProperty("#{taskService}")
+    //@ManagedProperty("#{taskService}")
+    @EJB
     private TaskService service;
 
     @PostConstruct
     public void init() {
-        // tasks = service.createCars(10);
+        tasks = service.getTasksFromDB();
         //tasks = new ArrayList<Task>();
         //tasks.add(new Task("2", "2", 22, "ddd"));
     }
@@ -67,10 +68,13 @@ public class TaskViewBean implements Serializable {
         if (tasks == null) {
             tasks = new ArrayList<Task>();
         }
-        Task task = new Task(23, this.name, this.complexity, this.status);
+        Task task = new Task((int) Math.random() * 1000, this.name, this.complexity, this.status);
         tasks.add(task);
-        FacesMessage msg = new FacesMessage("Task Added", "23");
+        FacesMessage msg = new FacesMessage("Task Added", task.getName());
         FacesContext.getCurrentInstance().addMessage(null, msg);
+        this.complexity = 0;
+        this.name = "";
+        this.status = "";
         return null;
     }
 
