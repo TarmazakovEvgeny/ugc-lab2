@@ -1,13 +1,10 @@
-package ru.mephi.ugc.burndown.gui;
+package ru.mephi.ugc.burndown.interfaces;
 
 import ru.mephi.ugc.burndown.model.Task;
 
 import javax.ejb.Local;
 import java.util.List;
 
-/**
- * Created by evgeny on 09.11.15.
- */
 @Local
 public interface TaskService {
     List<Task> getTasksFromDB();
@@ -16,7 +13,7 @@ public interface TaskService {
 
     void editTask(Task task);
 
-    void deleteTask(int taskId);
+    void deleteTask(Task task);
 
     Task getTask(int taskId);
 

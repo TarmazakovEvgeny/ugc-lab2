@@ -10,7 +10,7 @@
 </h:head>
 <h:body>
     <h:form id="form">
-        <p:growl id="msgs" showDetail="true"/>
+        <p:growl id="msgs" showDetail="true" sticky="true"/>
         <h:panelGrid columns="3">
             <p:commandButton value="Новая задача" type="button" onclick="PF('newTaskDlg').show();"
                              style="margin: 10px"/>
@@ -30,7 +30,9 @@
                 <h:outputText value="Название:" style="margin-top: 5px"/>
                 <p:spacer width="10" height="10"/>
                 <p:inputText value="#{dtEditView.name}" width="35"
-                             maxlength="128" required="true"/>
+                             maxlength="128">
+                    <f:validateRequired/>
+                </p:inputText>
                 <h:outputText value="Трудоемкость:" style="margin-top: 5px"/>
                 <p:spacer width="10" height="10"/>
                 <p:inputText value="#{dtEditView.complexity}" required="true"/>
@@ -41,12 +43,13 @@
             </h:panelGrid>
             <f:facet name="footer">
                 <p:commandButton value="Добавить" id="addNewTaskButton" action="#{dtEditView.onRowAdd}"
-                                 update=":form:msgs" icon="ui-icon-disk" onclick="PF('newTaskDlg').close();"/>
+                                 icon="ui-icon-disk" onclick="PF('newTaskDlg').close();" update=":form:msgs"
+                                 validateClient="#{not empty dtEditView.status}"/>
             </f:facet>
         </p:dialog>
 
         <p:dialog widgetVar="newDateDlg" id="newDateDialog"
-                  header="Добавить новую задачу" message="Add new document"
+                  header="Добавить новую дату" message="Add new document"
                   hideEffect="fade" showEffect="fade" resizable="fasle" closable="true"
                   lazy="true" width="400" modal="true">
         </p:dialog>
@@ -59,8 +62,6 @@
             <p:chart type="line" model="#{chartView.dateModel}" style="height:400px;"/>
 
         </p:dialog>
-    </h:form>
-    <h:form rendered="#{not empty dtEditView.tasks}">
         <p:dataTable id="tasks" var="task" value="#{dtEditView.tasks}"
                      editable="true" style="margin-bottom:20px"
                      emptyMessage="Таблица пуста.">
@@ -103,17 +104,8 @@
                 </p:cellEditor>
             </p:column>
 
-            <p:column headerText="Опции" style="width: 64px">
+            <p:column headerText="Опции" style="width: 32px">
                 <p:rowEditor/>
-                <p:commandLink styleClass="ui-icon ui-icon-trash" title="Delete" ajax="false">
-                    <p:confirm header="Confirmation" message="Удалить задачу?" icon="ui-icon-alert ui-icon"/>
-                </p:commandLink>
-                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                    <p:commandButton value="Да" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
-                                     actionListener="#{dtEditView.onRowDelete(task)}"/>
-                    <p:commandButton value="Нет" type="button" styleClass="ui-confirmdialog-no"
-                                     icon="ui-icon-close"/>
-                </p:confirmDialog>
             </p:column>
         </p:dataTable>
     </h:form>

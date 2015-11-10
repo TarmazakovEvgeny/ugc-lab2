@@ -15,7 +15,7 @@
 
     <!-- Welcome page -->
     <welcome-file-list>
-        <welcome-file>faces/index.xhtml</welcome-file>
+        <welcome-file>index.xhtml</welcome-file>
     </welcome-file-list>
 
     <!-- JSF mapping -->
@@ -47,7 +47,7 @@
         <display-name>Example Security Constraint</display-name>
         <web-resource-collection>
             <web-resource-name>Protected Area</web-resource-name>
-            <url-pattern>/BurndownServlet</url-pattern>
+            <url-pattern>/*</url-pattern>
             <http-method>DELETE</http-method>
             <http-method>GET</http-method>
             <http-method>POST</http-method>

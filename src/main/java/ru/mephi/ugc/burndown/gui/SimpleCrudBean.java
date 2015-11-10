@@ -1,5 +1,6 @@
 package ru.mephi.ugc.burndown.gui;
 
+import ru.mephi.ugc.burndown.interfaces.TaskService;
 import ru.mephi.ugc.burndown.model.Task;
 
 import javax.annotation.PostConstruct;

@@ -1,12 +1,12 @@
 package ru.mephi.ugc.burndown.gui;
 
+import ru.mephi.ugc.burndown.interfaces.TaskService;
 import ru.mephi.ugc.burndown.model.Task;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,20 +29,6 @@ public class TaskServiceBean implements TaskService {
 
     }
 
-    public List<Task> createCars(int size) {
-        List<Task> list = new ArrayList<Task>();
-        for (int i = 0; i < size; i++) {
-            list.add(new Task(getRandomId(), "", i, "Запланировано"));
-        }
-
-        return list;
-    }
-
-    private int getRandomId() {
-        return (int) Math.random() * 100;
-    }
-
-
     public List<String> getStatuses() {
         return Arrays.asList(statuses);
     }
@@ -62,10 +48,10 @@ public class TaskServiceBean implements TaskService {
         em.merge(task);
     }
 
-    public void deleteTask(int taskId) {
+    public void deleteTask(Task task) {
         try {
-            em.remove(getTask(taskId));
-            em.flush();
+            em.remove(getTask(task.getId()));
+            //em.flush();
         } catch (Exception e) {
             System.out.println("Ошибка удаления");
         }

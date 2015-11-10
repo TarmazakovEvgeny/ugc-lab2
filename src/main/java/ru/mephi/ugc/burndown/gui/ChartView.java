@@ -49,7 +49,7 @@ public class ChartView implements Serializable {
         dateModel.addSeries(series2);
 
         dateModel.setTitle("Zoom for Details");
-        dateModel.setZoom(true);
+        dateModel.setZoom(false);
         dateModel.getAxis(AxisType.Y).setLabel("Values");
         DateAxis axis = new DateAxis("Dates");
         axis.setTickAngle(-50);
