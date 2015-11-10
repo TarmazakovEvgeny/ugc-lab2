@@ -1,9 +1,5 @@
 package ru.mephi.ugc.burndown;
 
-import ru.mephi.ugc.burndown.interfaces.EmployeeService;
-import ru.mephi.ugc.burndown.model.Employee;
-
-import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,8 +12,6 @@ public class BurndownServlet extends HttpServlet {
 
     private static final long serialVersionUID = 628201543341459853L;
 
-    @EJB
-    EmployeeService employeeService;
 
     public BurndownServlet() {
     }
@@ -40,20 +34,13 @@ public class BurndownServlet extends HttpServlet {
         }
         String position = request.getParameter("position");
 
-        Employee employee = new Employee(employeeId, name, salary, position);
 
         if ("Add".equalsIgnoreCase(action)) {
-            employeeService.addEmployee(name, salary, position);
         } else if ("Edit".equalsIgnoreCase(action)) {
-            employeeService.editEmployee(employee);
         } else if ("Delete".equalsIgnoreCase(action)) {
-            employeeService.deleteEmployee(employeeId);
         } else if ("Search".equalsIgnoreCase(action)) {
-            employee = employeeService.getEmployee(employeeId);
         }
 
-        request.setAttribute("employee", employee);
-        request.setAttribute("EmployeeList", employeeService.getEmployee());
         request.getRequestDispatcher("index.xhtml").forward(request, response);
     }
 

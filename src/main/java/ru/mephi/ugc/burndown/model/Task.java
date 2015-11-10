@@ -35,6 +35,18 @@ public class Task {
     public Task() {
     }
 
+    @Override
+    public Task clone() {
+        return new Task(id, name, complexity, status);
+    }
+
+    public void restore(Task task) {
+        this.id = task.getId();
+        this.name = task.getName();
+        this.complexity = task.getComplexity();
+        this.status = task.getStatus();
+    }
+
     public int getId() {
         return id;
     }

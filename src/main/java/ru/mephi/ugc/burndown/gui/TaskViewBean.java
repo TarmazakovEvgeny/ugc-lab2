@@ -7,13 +7,12 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
-@ViewScoped
+@SessionScoped
 @ManagedBean(name = "dtEditView")
 public class TaskViewBean implements Serializable {
 
@@ -24,6 +23,8 @@ public class TaskViewBean implements Serializable {
     private String status;
 
     private List<Task> tasks;
+
+    private boolean edit;
 
     //@ManagedProperty("#{taskService}")
     @EJB
@@ -37,45 +38,47 @@ public class TaskViewBean implements Serializable {
     }
 
     public List<Task> getTasks() {
-        return tasks;
+        return service.getTasksFromDB();
     }
 
     public List<String> getStatuses() {
         return service.getStatuses();
     }
 
-    public void setService(TaskService service) {
+    public void setService(TaskServiceBean service) {
         this.service = service;
     }
 
     public void onRowEdit(RowEditEvent event) {
+        service.editTask(new Task(name, complexity, status));
         FacesMessage msg = new FacesMessage("Task Edited", String.valueOf(((Task) event.getObject()).getId()));
         FacesContext.getCurrentInstance().addMessage(null, msg);
+        edit = true;
+        //tasks = service.getTasksFromDB();
     }
 
     public void onRowCancel(RowEditEvent event) {
         FacesMessage msg = new FacesMessage("Edit Cancelled", String.valueOf(((Task) event.getObject()).getId()));
         FacesContext.getCurrentInstance().addMessage(null, msg);
+        edit = false;
+        //tasks = service.getTasksFromDB();
     }
 
     public void onRowDelete(Task task) {
-        tasks.remove(task);
+        service.deleteTask(task.getId());
         FacesMessage msg = new FacesMessage("Task Deleted", String.valueOf(task.getId()));
         FacesContext.getCurrentInstance().addMessage(null, msg);
+        tasks = service.getTasksFromDB();
     }
 
-    public String onRowAdd() {
-        if (tasks == null) {
-            tasks = new ArrayList<Task>();
-        }
-        Task task = new Task((int) Math.random() * 1000, this.name, this.complexity, this.status);
-        tasks.add(task);
-        FacesMessage msg = new FacesMessage("Task Added", task.getName());
+    public void onRowAdd() {
+        service.addTask(this.name, this.complexity, this.status);
+        FacesMessage msg = new FacesMessage("Task Added", this.name);
         FacesContext.getCurrentInstance().addMessage(null, msg);
         this.complexity = 0;
         this.name = "";
         this.status = "";
-        return null;
+        //tasks = service.getTasksFromDB();
     }
 
     public String getName() {
@@ -108,5 +111,9 @@ public class TaskViewBean implements Serializable {
 
     public String getStatus() {
         return status;
+    }
+
+    public boolean isEdit() {
+        return edit;
     }
 }
