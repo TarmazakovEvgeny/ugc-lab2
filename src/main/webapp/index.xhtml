@@ -31,21 +31,21 @@
                 <p:spacer width="10" height="10"/>
                 <p:inputText value="#{dtEditView.name}" width="35"
                              maxlength="128">
-                    <f:validateRequired/>
                 </p:inputText>
                 <h:outputText value="Трудоемкость:" style="margin-top: 5px"/>
                 <p:spacer width="10" height="10"/>
                 <p:inputText value="#{dtEditView.complexity}" required="true"/>
 
-                <h:outputText value="Статус:" style="margin-top: 5px"/>
+                <p:outputLabel for="console" value="Статус:"/>
                 <p:spacer width="10" height="10"/>
-                <p:inputText value="#{dtEditView.status}" required="true"/>
+                <p:selectOneMenu id="console" value="#{dtEditView.status}" style="width:125px">
+                    <f:selectItem itemLabel="Select One" itemValue=""/>
+                    <f:selectItems value="#{dtEditView.statuses}"/>
+                </p:selectOneMenu>
+
             </h:panelGrid>
-            <f:facet name="footer">
-                <p:commandButton value="Добавить" id="addNewTaskButton" action="#{dtEditView.onRowAdd}"
-                                 icon="ui-icon-disk" onclick="PF('newTaskDlg').close();" update=":form:msgs"
-                                 validateClient="#{not empty dtEditView.status}"/>
-            </f:facet>
+            <p:commandButton value="Добавить" id="addNewTaskButton" action="#{dtEditView.onRowAdd}"
+                             icon="ui-icon-disk" onclick="PF('newTaskDlg').close();" update="msgs"/>
         </p:dialog>
 
         <p:dialog widgetVar="newDateDlg" id="newDateDialog"
@@ -62,49 +62,49 @@
             <p:chart type="line" model="#{chartView.dateModel}" style="height:400px;"/>
 
         </p:dialog>
-        <p:dataTable id="tasks" var="task" value="#{dtEditView.tasks}"
-                     editable="true" style="margin-bottom:20px"
-                     emptyMessage="Таблица пуста.">
-            <f:facet name="header">Список задач</f:facet>
+
+        <p:dataTable id="task1" var="t" value="#{dtEditView.tasks}"
+                     editable="true" style="margin-bottom:20px">
+            <f:facet name="header">Tasks</f:facet>
 
             <p:ajax event="rowEdit" listener="#{dtEditView.onRowEdit}" update=":form:msgs"/>
             <p:ajax event="rowEditCancel" listener="#{dtEditView.onRowCancel}" update=":form:msgs"/>
 
-            <p:column headerText="Id">
-                <h:outputText value="#{task.id}"/>
+            ` <p:column headerText="Id">
+            <p:cellEditor>
+                <f:facet name="output"><h:outputText value="#{t.id}"/></f:facet>
+                <f:facet name="input"><p:inputText id="modelInput" value="#{t.id}" style="width:100%"/></f:facet>
+            </p:cellEditor>
             </p:column>
 
-            <p:column headerText="Название">
+            <p:column headerText="Name">
                 <p:cellEditor>
-                    <f:facet name="output"><h:outputText value="#{task.name}"/></f:facet>
-                    <f:facet name="input"><p:inputText value="#{task.name}" style="width:100%" label="Name"/></f:facet>
+                    <f:facet name="output"><h:outputText value="#{t.name}"/></f:facet>
+                    <f:facet name="input"><p:inputText value="#{t.name}" style="width:100%" label="Year"/></f:facet>
                 </p:cellEditor>
             </p:column>
 
-            <p:column headerText="Трудоемкость">
+            <p:column headerText="Complexity">
                 <p:cellEditor>
-                    <f:facet name="output">
-                        <h:outputText value="#{task.complexity} часов"/>
-                    </f:facet>
-                    <f:facet name="input">
-                        <h:inputText value="#{task.complexity}" style="width:100%" label="Name"/>
-                    </f:facet>
+                    <f:facet name="output"><h:outputText value="#{t.complexity}"/></f:facet>
+                    <f:facet name="input"><p:inputText value="#{t.complexity}" style="width:100%"
+                                                       label="Year"/></f:facet>
                 </p:cellEditor>
             </p:column>
 
-            <p:column headerText="Статус">
+            <p:column headerText="Status">
                 <p:cellEditor>
-                    <f:facet name="output"><h:outputText value="#{task.status}"/></f:facet>
+                    <f:facet name="output"><h:outputText value="#{t.status}"/></f:facet>
                     <f:facet name="input">
-                        <h:selectOneMenu value="#{task.status}" style="width:100%">
-                            <f:selectItems value="#{dtEditView.statuses}" var="status" itemLabel="#{status}"
-                                           itemValue="#{status}"/>
+                        <h:selectOneMenu value="#{t.status}" style="width:100%">
+                            <f:selectItems value="#{dtEditView.statuses}" var="man" itemLabel="#{man}"
+                                           itemValue="#{man}"/>
                         </h:selectOneMenu>
                     </f:facet>
                 </p:cellEditor>
             </p:column>
 
-            <p:column headerText="Опции" style="width: 32px">
+            <p:column style="width:32px">
                 <p:rowEditor/>
             </p:column>
         </p:dataTable>

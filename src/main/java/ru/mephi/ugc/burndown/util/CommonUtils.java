@@ -30,7 +30,6 @@ public class CommonUtils implements Serializable {
         } catch (IOException e) {
             throw new RuntimeException("Unable to rerirect to " + url);
         }
-
         facesContext.responseComplete();
     }
 }

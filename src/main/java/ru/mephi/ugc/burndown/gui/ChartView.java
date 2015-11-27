@@ -29,7 +29,6 @@ public class ChartView implements Serializable {
         series1.setLabel("Series 1");
 
         series1.set("2014-01-01", 51);
-        series1.set("2014-01-06", 22);
         series1.set("2014-01-12", 65);
         series1.set("2014-01-18", 74);
         series1.set("2014-01-24", 24);
@@ -46,7 +45,6 @@ public class ChartView implements Serializable {
         series2.set("2014-01-30", 62);
 
         dateModel.addSeries(series1);
-        dateModel.addSeries(series2);
 
         dateModel.setTitle("Zoom for Details");
         dateModel.setZoom(false);

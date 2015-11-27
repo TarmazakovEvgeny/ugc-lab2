@@ -7,12 +7,13 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
 @Stateless
 @Local(TaskService.class)
-public class TaskServiceBean implements TaskService {
+public class TaskServiceBean implements TaskService, Serializable {
 
     private final static String[] statuses;
 
@@ -23,9 +24,10 @@ public class TaskServiceBean implements TaskService {
 
 
     static {
-        statuses = new String[2];
-        statuses[0] = "Запланировано";
-        statuses[1] = "Выполнено";
+        statuses = new String[3];
+        statuses[0] = "Planned";
+        statuses[1] = "In Progress";
+        statuses[2] = "Done";
 
     }
 
@@ -45,12 +47,12 @@ public class TaskServiceBean implements TaskService {
 
     public void addTask(String name, int complexity, String status) {
         Task task = new Task(name, complexity, status);
-        em.merge(task);
+        em.persist(task);
     }
 
     public void deleteTask(Task task) {
         try {
-            em.remove(getTask(task.getId()));
+//            em.remove(getTask(task.getId()));
             //em.flush();
         } catch (Exception e) {
             System.out.println("Ошибка удаления");
