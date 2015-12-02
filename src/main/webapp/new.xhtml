@@ -10,112 +10,170 @@
 <h:body>
     <h:form id="main">
         <p:growl id="messages" showDetail="true"/>
+        <p:tabView dynamic="true" cache="true">
+
+            <p:tab title="Диаграмма">
+                <p:poll interval="5" update="graph"/>
+                <p:chart id="graph" type="line" model="#{chartView.dateModelIdealSprint}"
+                         style="height:500px; width: 1000px; margin: 0 auto" rendered="true"/>
+            </p:tab>
+
+            <p:tab title="Таблица">
+                <h:panelGrid columns="3">
+                    <p:commandButton value="Новая задача" type="button" onclick="PF('newTaskDlg').show();"
+                                     style="margin: 10px"/>
+                    <p:commandButton value="Добавить дни" type="button" onclick="PF('newDateDlg').show();"
+                                     style="margin: 10px"/>
+                </h:panelGrid>
+
+                <!-- Add new document -dialog -->
+                <h:form id="form2">
+                    <p:dialog widgetVar="newTaskDlg" id="newTaskDialog"
+                              header="Добавить новую задачу" message="Add new document"
+                              hideEffect="fade" showEffect="fade" resizable="fasle" closable="true"
+                              lazy="true" width="400" modal="true">
+
+                        <h:panelGrid columns="3" cellpadding="5">
+                            <h:outputText value="Название:" style="margin-top: 5px"/>
+                            <p:spacer width="5" height="5"/>
+                            <p:inputText value="#{item.name}" style="width: 125px"></p:inputText>
+
+                            <h:outputText value="Трудоемкость:" style="margin-top: 5px"/>
+                            <p:spacer width="5" height="5"/>
+                            <p:inputText value="#{item.complexity}" required="true" style="width: 125px"/>
+
+                            <p:outputLabel for="console" value="Статус:"/>
+                            <p:spacer width="10" height="10"/>
+                            <p:selectOneMenu id="console" value="#{item.status}" style="width:125px">
+                                <f:selectItem itemLabel="Select One" itemValue=""/>
+                                <f:selectItems value="#{item.statuses}"/>
+                            </p:selectOneMenu>
+
+                        </h:panelGrid>
+                        <p:commandButton value="Добавить" id="addNewTaskButton" action="#{item.addAction}"
+                                         style="margin: 0 auto" onclick="PF('newTaskDlg').close();"
+                                         update=":main:messages"/>
+                    </p:dialog>
+                    <p:spacer height="15px;"/>
+                </h:form>
+
+                <!-- Add new date dialog -->
+                <h:form id="form3">
+                    <p:dialog widgetVar="newDateDlg" id="newDateDialog"
+                              header="Добавить новые дни"
+                              hideEffect="fade" showEffect="fade" resizable="fasle" closable="true"
+                              lazy="true" width="400" modal="true">
+
+                        <h:panelGrid columns="2" cellpadding="5">
+                            <h:outputText value="Начало спринта:" style="margin-top: 5px"/>
+                            <p:calendar value="#{item.startSprintDay}" style="width:40px"/>
 
 
-        <h:panelGrid columns="3" style="align: center">
-            <p:commandButton value="Новая задача" type="button" onclick="PF('newTaskDlg').show();"
-                             style="margin: 10px"/>
-            <p:commandButton value="Добавить дни" type="button" onclick="PF('newDateDlg').show();"
-                             style="margin: 10px"/>
-            <p:commandButton value="Диаграмма" type="button" onclick="PF('DiagramDlg').show();"
-                             style="margin: 10px"/>
-        </h:panelGrid>
-    </h:form>
-    <!-- Add new document -dialog -->
-    <h:form id="form2">
-        <p:dialog widgetVar="newTaskDlg" id="newTaskDialog"
-                  header="Добавить новую задачу" message="Add new document"
-                  hideEffect="fade" showEffect="fade" resizable="fasle" closable="true"
-                  lazy="true" width="400" modal="true">
+                            <h:outputText value="Конец спринта:" style="margin-top: 5px"/>
+                            <p:calendar value="#{item.finishSprintDay}" style="width:40px"/>
 
-            <h:panelGrid columns="3">
-                <h:outputText value="Название:" style="margin-top: 5px"/>
-                <p:spacer width="10" height="10"/>
-                <p:inputText value="#{item.name}" width="35"
-                             maxlength="128">
-                </p:inputText>
-                <h:outputText value="Трудоемкость:" style="margin-top: 5px"/>
-                <p:spacer width="10" height="10"/>
-                <p:inputText value="#{item.complexity}" required="true"/>
+                        </h:panelGrid>
 
-                <p:outputLabel for="console" value="Статус:"/>
-                <p:spacer width="10" height="10"/>
-                <p:selectOneMenu id="console" value="#{item.status}" style="width:125px">
-                    <f:selectItem itemLabel="Select One" itemValue=""/>
-                    <f:selectItems value="#{item.statuses}"/>
-                </p:selectOneMenu>
+                        <p:commandButton value="Добавить" id="addNewDateButton" action="#{item.addNewDate}"
+                                         onclick="PF('newTaskDlg').close();"
+                                         update=":main:messages"/>
+                    </p:dialog>
+                    <p:spacer height="15px;"/>
+                </h:form>
 
-            </h:panelGrid>
-            <p:commandButton value="Add" id="addNewTaskButton" action="#{item.addAction}"
-                             icon="ui-icon-disk" onclick="PF('newTaskDlg').close();" update=":main:messages"/>
-        </p:dialog>
-        <p:spacer height="15px;"/>
-    </h:form>
+                <h:form id="form1">
+                    <p:dataTable value="#{item.taskList}" var="o" widgetVar="50" editable="true">
+                        <f:facet name="header">
+                            Task List
+                        </f:facet>
+                        <p:ajax event="rowEdit" listener="#{item.onEdit}" update=":main:messages"/>
+                        <p:ajax event="rowEditCancel" listener="#{item.onCancel}" update=":main:messages"/>
 
-    <!-- Diagram - dialog -->
-    <p:dialog widgetVar="DiagramDlg" id="DiagramDialog"
-              header="Burndown диаграмма"
-              hideEffect="fade" showEffect="fade" resizable="fasle" closable="true"
-              width="78%" modal="true" height="500">
-        <p:chart type="line" model="#{chartView.dateModel}" style="height:500px; width: 1000px"
-                 styleClass="ui-layout-center"/>
-    </p:dialog>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Id"/>
+                            </f:facet>
+                            <h:outputText value="#{o.id}"/>
+                        </p:column>
 
-    <h:form id="form1">
-        <p:dataTable value="#{item.taskList}" var="o" widgetVar="50" editable="true">
-            <f:facet name="header">
-                Task List
-            </f:facet>
-            <p:ajax event="rowEdit" listener="#{item.onEdit}" update=":main:messages"/>
-            <p:ajax event="rowEditCancel" listener="#{item.onCancel}" update=":main:messages"/>
+                        <p:column>
+                            <f:facet name="header"><h:outputText value="Name"/></f:facet>
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{o.name}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{o.name}" style="width:100%"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
 
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="Id"/>
-                </f:facet>
-                <h:outputText value="#{o.id}"/>
-            </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Complexity"/>
+                            </f:facet>
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{o.complexity}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{o.complexity}" style="width:100%"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
 
-            <p:column>
-                <f:facet name="header"><h:outputText value="Name"/></f:facet>
-                <p:cellEditor>
-                    <f:facet name="output">
-                        <h:outputText value="#{o.name}"/>
-                    </f:facet>
-                    <f:facet name="input">
-                        <p:inputText value="#{o.name}" style="width:100%"/>
-                    </f:facet>
-                </p:cellEditor>
-            </p:column>
+                        <p:column headerText="Status">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{o.status}"
+                                                                     style="width: 125px"/></f:facet>
+                                <f:facet name="input">
+                                    <p:selectOneMenu value="#{item.status}" style="width: 125px">
+                                        <f:selectItems value="#{item.statuses}" var="man" itemLabel="#{man}"
+                                                       itemValue="#{man}"/>
+                                    </p:selectOneMenu>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
 
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="Complexity"/>
-                </f:facet>
-                <p:cellEditor>
-                    <f:facet name="output">
-                        <h:outputText value="#{o.complexity}"/>
-                    </f:facet>
-                    <f:facet name="input">
-                        <p:inputText value="#{o.complexity}" style="width:100%"/>
-                    </f:facet>
-                </p:cellEditor>
-            </p:column>
+                        <p:column headerText="Start Time">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{o.startDate}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:calendar value="#{o.startDate}" style="width:100%"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
 
-            <p:column headerText="Status">
-                <p:cellEditor>
-                    <f:facet name="output"><h:outputText value="#{o.status}" style="width: 125px"/></f:facet>
-                    <f:facet name="input">
-                        <p:selectOneMenu value="#{item.status}" style="width: 125px">
-                            <f:selectItems value="#{item.statuses}" var="man" itemLabel="#{man}" itemValue="#{man}"/>
-                        </p:selectOneMenu>
-                    </f:facet>
-                </p:cellEditor>
-            </p:column>
-            <p:column headerText="Options" style="width:64px">
-                <p:rowEditor/>
-            </p:column>
-        </p:dataTable>
+                        <p:column headerText="Finish Time">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{o.finishDate}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:calendar value="#{o.finishDate}" style="width:100%"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column style="width:32px">
+                            <p:rowEditor/>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:tab>
+
+            <p:tab title="Scrum команда">
+                <h:panelGrid columns="1" cellpadding="10">
+                    <h:outputText value="Тармазаков Евгений"/>
+                    <h:outputText value="Штанько Александр"/>
+                    <h:outputText value="Сидорова Любовь"/>
+                    <h:outputText value="Соловьева Анна"/>
+                </h:panelGrid>
+            </p:tab>
+
+        </p:tabView>
     </h:form>
 </h:body>
 </html>

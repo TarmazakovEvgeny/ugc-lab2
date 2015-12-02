@@ -52,8 +52,8 @@ public class TaskServiceBean implements TaskService, Serializable {
 
     public void deleteTask(Task task) {
         try {
-//            em.remove(getTask(task.getId()));
-            //em.flush();
+            em.remove(getTask(task.getId()));
+            em.flush();
         } catch (Exception e) {
             System.out.println("Ошибка удаления");
         }
