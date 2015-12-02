@@ -17,7 +17,8 @@
                              style="margin: 10px"/>
             <p:commandButton value="Добавить дни" type="button" onclick="PF('newDateDlg').show();"
                              style="margin: 10px"/>
-            <p:commandButton value="Диаграмма" type="button" onclick="PF('DiagramDlg').show();"
+            <p:commandButton value="Диаграмма" type="button" actionListener="#{chartView.updateChart}"
+                             onclick="PF('DiagramDlg').show(); "
                              style="margin: 10px"/>
         </h:panelGrid>
     </h:form>
@@ -57,8 +58,8 @@
               header="Burndown диаграмма"
               hideEffect="fade" showEffect="fade" resizable="fasle" closable="true"
               width="78%" modal="true" height="500">
-        <p:chart type="line" model="#{chartView.dateModel}" style="height:500px; width: 1000px"
-                 styleClass="ui-layout-center"/>
+        <p:chart type="line" model="#{chartView.dateModelIdealSprint}" style="height:500px; width: 1000px"
+                 styleClass="ui-layout-center" rendered="true"/>
     </p:dialog>
 
     <h:form id="form1">
@@ -112,7 +113,30 @@
                     </f:facet>
                 </p:cellEditor>
             </p:column>
-            <p:column headerText="Options" style="width:64px">
+
+            <p:column headerText="Start Time">
+                <p:cellEditor>
+                    <f:facet name="output">
+                        <h:outputText value="#{o.startDate}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                        <p:calendar value="#{o.startDate}" style="width:100%"/>
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Finish Time">
+                <p:cellEditor>
+                    <f:facet name="output">
+                        <h:outputText value="#{o.finishDate}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                        <p:calendar value="#{o.finishDate}" style="width:100%"/>
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column style="width:32px">
                 <p:rowEditor/>
             </p:column>
         </p:dataTable>
