@@ -1,5 +1,6 @@
 package ru.mephi.ugc.burndown.gui;
 
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.DateAxis;
 import org.primefaces.model.chart.LineChartModel;
@@ -9,15 +10,17 @@ import ru.mephi.ugc.burndown.model.Task;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @ManagedBean
+@ApplicationScoped
 public class ChartView implements Serializable {
 
     private LineChartModel dateModelIdealSprint;
@@ -26,17 +29,22 @@ public class ChartView implements Serializable {
     private ArrayList<Integer> complexityList;
     private Integer lengthSprint = 7;
 
-    private Date startSprintDay = new Date(2015, 12, 2);
-    private Date finishSprintDay = new Date(2015, 12, 19);
+    @NotNull(message = "Введите начало спринта")
+    private Date startSprintDay;
+    @NotNull(message = "Введите конец спринта")
+    private Date finishSprintDay;
+
+    private Integer sumComplexity = 0;
+
+    private Boolean isRendered = false;
 
     @EJB
     private TaskService service;
 
-    private Integer sumComplexity = 0;
 
     @PostConstruct
     public void init() {
-        updateChart();
+        isRendered = true;
         //createDateModel();
     }
 
@@ -60,6 +68,7 @@ public class ChartView implements Serializable {
 
         addIdealSprint();
         addRealSprint();
+
 //        createDateModel();
     }
 
@@ -75,10 +84,23 @@ public class ChartView implements Serializable {
         if (sumComplexity == 0) {
             realSprint.set(getTime(finishSprintDay), sumComplexity);
         }
+        if (sumComplexity != 0) {
+            realSprint.set(getTime(finishSprintDay), 0);
+        }
         dateModelIdealSprint.addSeries(realSprint);
 
         dateModelIdealSprint.getAxis(AxisType.Y).setLabel("Complexity");
         DateAxis axisX = new DateAxis("Dates");
+        if (startSprintDay != null) {
+            startSprintDay.setDate(startSprintDay.getDate() - 1);
+            finishSprintDay.setDate(finishSprintDay.getDate() + 1);
+        }
+        axisX.setMin(getTime(startSprintDay));
+        axisX.setMax(getTime(finishSprintDay));
+
+        startSprintDay.setDate(startSprintDay.getDate() + 1);
+        finishSprintDay.setDate(finishSprintDay.getDate() - 1);
+
         axisX.setTickFormat("%b %#d, %y");
         dateModelIdealSprint.getAxes().put(AxisType.X, axisX);
     }
@@ -96,6 +118,7 @@ public class ChartView implements Serializable {
         axisX.setTickFormat("%b %#d, %y");
         dateModelIdealSprint.getAxes().put(AxisType.X, axisX);
     }
+
 
     private void createDateModel() {
         dateModelIdealSprint = new LineChartModel();
@@ -119,17 +142,47 @@ public class ChartView implements Serializable {
         dateModelIdealSprint.getAxes().put(AxisType.X, axis);
     }
 
+    public void addNewDate(RowEditEvent event) {
+        FacesMessage msg = new FacesMessage("Sprint Date added", "");
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
     private String getTime(Date date) {
-        String s = new String();
-        String year = String.valueOf(date.getYear());
-        String month = String.format("%02d", date.getMonth());
-        String day = String.format("%02d", date.getDate());
-        s = year + "-" + month + "-" + day;
-        return s;
+        if (date != null) {
+            String s = new String();
+            String year = String.valueOf(date.getYear() + 1900);//возвращает 115
+            String month = String.format("%02d", date.getMonth() + 1);// возвращает месяц на 1 меньше
+            String day = String.format("%02d", date.getDate());
+            s = year + "-" + month + "-" + day;
+            return s;
+        }
+        return null;
     }
 
     public LineChartModel getDateModelIdealSprint() {
         updateChart();
         return dateModelIdealSprint;
+    }
+
+    public void addNewDate(ActionEvent actionEvent) {
+
+        FacesMessage msg = new FacesMessage("Sprint Date added", "");
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
+    public Date getStartSprintDay() {
+        return startSprintDay;
+    }
+
+    public void setStartSprintDay(Date startSprintDay) {
+        this.startSprintDay = startSprintDay;
+    }
+
+    public Date getFinishSprintDay() {
+        return finishSprintDay;
+    }
+
+    public void setFinishSprintDay(Date finishSprintDay) {
+        this.finishSprintDay = finishSprintDay;
     }
 }

@@ -8,34 +8,43 @@ import ru.mephi.ugc.burndown.util.CommonUtils;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @ManagedBean(name = "item")
-@SessionScoped
+@ApplicationScoped
 public class TaskView implements Serializable {
 
     private static final long serialVersionUID = 1L;
     //TASK
+    @NotNull(message = "Введите имя задачи")
     private String name;
+    @NotNull(message = "Введите сложность")
     private Integer complexity;
-    private String status;
+
     private Date startDate;
     private Date finishDate;
     //------------------
 
+    @NotNull
     private Date startSprintDay;
+
+    @NotNull
     private Date finishSprintDay;
 
     private List<Task> taskList;
 
     @EJB
     private TaskService service;
+
+    @ManagedProperty(value = "#{chartView}")
+    private ChartView chartView;
 
     @ManagedProperty(value = "#{commonUtils}")
     private CommonUtils utils;
@@ -54,7 +63,7 @@ public class TaskView implements Serializable {
     }
 
     public void addAction() {
-        service.addTask(this.name, this.complexity, this.status);
+        service.addTask(this.name, this.complexity, "Planned");
         utils.redirectWithGet();
         FacesMessage msg = new FacesMessage("Task Added", "");
         FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -63,9 +72,20 @@ public class TaskView implements Serializable {
 
     public void onEdit(RowEditEvent event) {
         Task task = (Task) event.getObject();
-        if (status != null) {
-            task.setStatus(status);
+        if (task.getStartDate() != null) {
+            if (task.getFinishDate() == null) {
+                task.setStatus("In Progress");
+            } else {
+                if (task.getStartDate().after(task.getFinishDate())) {
+                    task.setFinishDate(task.getStartDate());
+                }
+                task.setStatus("Done");
+            }
+        } else {
+            task.setStatus("Planned");
+            task.setFinishDate(null);
         }
+
         service.editTask(task);
         Integer id = ((Task) event.getObject()).getId();
         FacesMessage msg = new FacesMessage("Task " + id + " edited", "");
@@ -80,14 +100,6 @@ public class TaskView implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, msg);
 
         taskList = service.getTasksFromDB();
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public Integer getComplexity() {
@@ -140,5 +152,13 @@ public class TaskView implements Serializable {
 
     public void setFinishSprintDay(Date finishSprintDay) {
         this.finishSprintDay = finishSprintDay;
+    }
+
+    public ChartView getChartView() {
+        return chartView;
+    }
+
+    public void setChartView(ChartView chartView) {
+        this.chartView = chartView;
     }
 }
