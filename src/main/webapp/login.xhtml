@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
 >
-<h:head>
+<head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
     <title>Burndown</title>
-</h:head>
-<body>
-<h1 align="center">Burndown-диаграмма</h1>
+</head>
 
-<div align="center">
+<body>
+<h2 align="center">Burndown-диаграмма</h2>
+
+<p:panel style="margin: 0 auto">
     <p:panel header="Авторизация" id="panel" style="border: 2px; border-radius: 10px">
         <form method="post" action="#{request.contextPath}/j_security_check">
             <label for="username" style="margin-top: 10px">Логин:</label>
@@ -22,6 +22,6 @@
             <input type="submit" value="Войти" style="margin: 10px"/>
         </form>
     </p:panel>
-</div>
+</p:panel>
 </body>
 </html>

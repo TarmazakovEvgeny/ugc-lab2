@@ -2,8 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://java.sun.com/jsf/core"
->
+      xmlns:f="http://java.sun.com/jsf/core">
 <h:head>
     <title>Burndown</title>
 </h:head>
@@ -14,10 +13,7 @@
     <p:tabView dynamic="true" cache="true">
         <p:ajax event="tabChange" listener="#{chartView.updateChart}" update="graph"/>
         <p:tab title="Диаграмма">
-            <p:commandButton value="Обновить" id="updateChart"
-                             style="margin: 0 auto" update=":main:messages">
-                <p:ajax event="click" update="graph" listener="#{chartView.updateChart}"/>
-            </p:commandButton>
+
             <p:chart id="graph" type="line" model="#{chartView.dateModelIdealSprint}"
                      style="height:500px; margin: 0 auto; "/>
         </p:tab>

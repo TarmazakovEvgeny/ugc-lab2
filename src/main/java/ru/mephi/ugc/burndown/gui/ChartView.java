@@ -8,7 +8,6 @@ import org.primefaces.model.chart.LineChartSeries;
 import ru.mephi.ugc.burndown.interfaces.TaskService;
 import ru.mephi.ugc.burndown.model.Task;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ApplicationScoped;
@@ -40,13 +39,6 @@ public class ChartView implements Serializable {
 
     @EJB
     private TaskService service;
-
-
-    @PostConstruct
-    public void init() {
-        isRendered = true;
-        //createDateModel();
-    }
 
     public void updateChart() {
         dateModelIdealSprint = new LineChartModel();
@@ -81,28 +73,35 @@ public class ChartView implements Serializable {
             sumComplexity -= task.getComplexity();
             realSprint.set(task.getFinishDate().toString(), sumComplexity);
         }
-        if (sumComplexity == 0) {
-            realSprint.set(getTime(finishSprintDay), sumComplexity);
-        }
-        if (sumComplexity != 0) {
-            realSprint.set(getTime(finishSprintDay), 0);
-        }
+
         dateModelIdealSprint.addSeries(realSprint);
 
         dateModelIdealSprint.getAxis(AxisType.Y).setLabel("Complexity");
         DateAxis axisX = new DateAxis("Dates");
-        if (startSprintDay != null) {
-            startSprintDay.setDate(startSprintDay.getDate() - 1);
-            finishSprintDay.setDate(finishSprintDay.getDate() + 1);
-        }
-        axisX.setMin(getTime(startSprintDay));
-        axisX.setMax(getTime(finishSprintDay));
 
-        startSprintDay.setDate(startSprintDay.getDate() + 1);
-        finishSprintDay.setDate(finishSprintDay.getDate() - 1);
+        axisX.setMin(setMinDate(startSprintDay));
+        axisX.setMax(setMaxDate(finishSprintDay));
 
         axisX.setTickFormat("%b %#d, %y");
         dateModelIdealSprint.getAxes().put(AxisType.X, axisX);
+    }
+
+    private String setMinDate(Date startDate) {
+        if (startDate != null) {
+            Date minDate = new Date();
+            minDate.setDate(startDate.getDate() - 1);
+            return getTime(minDate);
+        }
+        return null;
+    }
+
+    private String setMaxDate(Date finishDate) {
+        if (finishDate != null) {
+            Date maxDate = new Date();
+            maxDate.setDate(finishDate.getDate() + 1);
+            return getTime(maxDate);
+        }
+        return null;
     }
 
     private void addIdealSprint() {
@@ -165,7 +164,6 @@ public class ChartView implements Serializable {
     }
 
     public void addNewDate(ActionEvent actionEvent) {
-
         FacesMessage msg = new FacesMessage("Sprint Date added", "");
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
