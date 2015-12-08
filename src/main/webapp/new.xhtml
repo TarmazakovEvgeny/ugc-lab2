@@ -10,7 +10,7 @@
     <h:form id="main">
         <p:growl id="messages" showDetail="true"/>
     </h:form>
-    <p:tabView dynamic="true" cache="true">
+    <p:tabView dynamic="true" cache="true" style="background: #faaa0a;">
         <p:ajax event="tabChange" listener="#{chartView.updateChart}" update="graph"/>
         <p:tab title="Диаграмма">
 
