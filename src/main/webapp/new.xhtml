@@ -5,12 +5,15 @@
       xmlns:f="http://java.sun.com/jsf/core">
 <h:head>
     <title>Burndown</title>
+    <style type="text/css">
+
+    </style>
 </h:head>
 <h:body>
     <h:form id="main">
         <p:growl id="messages" showDetail="true"/>
     </h:form>
-    <p:tabView dynamic="true" cache="true" style="background: #faaa0a;">
+    <p:tabView dynamic="true" cache="true">
         <p:ajax event="tabChange" listener="#{chartView.updateChart}" update="graph"/>
         <p:tab title="Диаграмма">
 
@@ -24,6 +27,9 @@
                                  style="margin: 10px"/>
                 <p:commandButton value="Добавить дни" type="button" onclick="PF('newDateDlg').show();"
                                  style="margin: 10px"/>
+
+                <p:commandButton type="button" value="Logout" style="margin-right: 10px"/>
+
             </h:panelGrid>
 
             <!-- Add new document -dialog -->

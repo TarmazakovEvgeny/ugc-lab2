@@ -31,6 +31,10 @@
             background: radial-gradient(ellipse at center, rgba(230, 230, 230, 1) 0%, rgba(230, 230, 230, 1) 23%, rgba(204, 204, 204, 1) 100%);
             filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e6e6e6', endColorstr='#cccccc', GradientType=1);
         }
+
+        #button input::hover {
+            background: rgba(230, 230, 230, 1);
+        }
     </style>
 </head>
 
@@ -47,16 +51,20 @@
                    style="margin-top: 10px; color: #383838  ">Пароль: </label>
             <input type="password" id="password" name="j_password"
                    style="margin-top: 10px; border: medium none rgb(240, 255, 255); border-color: #FFE4C4; "/> <br/>
+
             <input type="submit" value="Войти"
                    style="width: 80px;
-                   height: 28px;
+                   height: 30px;
                    text-align: center;
                    font-size: medium;
                    margin: 17px;
-                   background: #D0D0D0;
-                   color: #383838;
                    border-radius:10px;
-                   border: none"/>
+                   border: solid;
+                   border-color: rgba(230, 230, 230, 1)"
+                   onmouseover="this.style.backgroundColor='rgba(230, 230, 230, 1)'"
+                   onmouseout="this.style.backgroundColor='#faaa0a'"/>
+
+
         </form>
     </p:panel>
 </p:panel>
